@@ -1,0 +1,36 @@
+{
+  "model": "opus",
+  "effortLevel": "high",
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(find:*)", "Bash(wc:*)",
+      "Bash(python3:*)", "Bash(node:*)", "Bash(npx:*)", "Bash(open:*)",
+      "Bash(yt-dlp:*)", "Bash(brew list:*)", "Bash(git --version:*)",
+      "WebSearch", "WebFetch(domain:github.com)", "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      { "matcher": "", "hooks": [ { "type": "command", "command": "bash ~/.claude/hooks/crg-auto-build.sh", "timeout": 30 } ] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Read|Grep|Glob", "hooks": [ { "type": "command", "command": "bash ~/.claude/hooks/crg-remind.sh", "timeout": 2 } ] },
+      { "matcher": "mcp__figma-console__figma_execute|mcp__figma-console__figjam_create_.*|mcp__figma-console__figjam_auto_arrange",
+        "hooks": [ { "type": "command", "command": "bash ~/.claude/hooks/figjam-skill-remind.sh", "timeout": 5 } ] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Edit|Write|Bash", "hooks": [ { "type": "command", "command": "code-review-graph update --skip-flows", "timeout": 5 } ] },
+      { "matcher": "Bash", "hooks": [ { "type": "command", "command": "bash ~/.claude/hooks/transcript-meeting-report.sh", "timeout": 10, "statusMessage": "Checking for transcript to file" } ] }
+    ]
+  },
+  "enabledPlugins": {
+    "everything-claude-code@everything-claude-code": true,
+    "composio@composio": true,
+    "cli-anything@cli-anything": true
+  },
+  "extraKnownMarketplaces": {
+    "everything-claude-code": { "source": { "source": "github", "repo": "affaan-m/everything-claude-code" } },
+    "composio": { "source": { "source": "git", "url": "https://github.com/ComposioHQ/composio-plugin-cc.git" } },
+    "cli-anything": { "source": { "source": "github", "repo": "HKUDS/CLI-Anything" } }
+  }
+}

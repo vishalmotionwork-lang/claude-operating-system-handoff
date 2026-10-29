@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Style System — FABLE 5 Main · editor breakdown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4EFE6; --surface:#FFFFFF; --ink:#211D16; --body:#403A2E; --muted:#8B8273;
+    --line:#E4DCCD; --accent:#C0592F; --accent-d:#A2461F; --accent-soft:#F3E2D7;
+    --mark:#FBE08A; --green:#2E7D5B; --blue:#2D5BA8;
+    --serif:'Instrument Serif',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --w:920px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--body);font-family:var(--sans);
+    font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--w);margin:0 auto;padding:0 22px}
+  h1,h2,h3,h4{color:var(--ink);line-height:1.18;margin:0}
+  em,.serif{font-family:var(--serif);font-style:italic}
+  a{color:var(--accent-d)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+    background:#efe7d8;padding:1px 6px;border-radius:5px;color:#5a4a32}
+  .mark{background:linear-gradient(transparent 55%,var(--mark) 55%);padding:0 2px;font-weight:600;color:var(--ink)}
+
+  /* ---- top nav ---- */
+  nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding-top:9px;padding-bottom:9px}
+  nav b{font-family:var(--sans);font-weight:800;color:var(--ink);margin-right:10px;font-size:14px;letter-spacing:.02em}
+  nav a{font-size:12.5px;color:var(--muted);text-decoration:none;padding:4px 9px;border-radius:7px;font-weight:600}
+  nav a:hover{background:var(--accent-soft);color:var(--accent-d)}
+
+  /* ---- hero ---- */
+  header.hero{padding:54px 0 30px}
+  .kicker{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent-d);
+    background:var(--accent-soft);padding:6px 13px;border-radius:999px}
+  .sun{display:inline-block;width:13px;height:13px;color:var(--accent)}
+  header.hero h1{font-size:46px;font-weight:800;letter-spacing:-.02em;margin:20px 0 6px}
+  header.hero h1 .s{font-family:var(--serif);font-weight:400;font-style:italic;letter-spacing:0}
+  .sub{font-size:18.5px;max-width:680px;color:var(--body)}
+  .meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+  .pill{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink)}
+  .pill span{color:var(--muted);font-weight:500}
+
+  /* ---- generic section ---- */
+  section{padding:30px 0;border-top:1px solid var(--line)}
+  .sec-no{font-family:var(--serif);font-style:italic;font-size:21px;color:var(--accent)}
+  .sec-h{display:flex;align-items:baseline;gap:13px;margin-bottom:6px}
+  .sec-h h2{font-size:30px;font-weight:800;letter-spacing:-.015em}
+  .lede{font-size:17px;max-width:760px;margin:10px 0 24px;color:var(--body)}
+  .lede strong{color:var(--ink)}
+
+  /* ---- fingerprint grid ---- */
+  .fp{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .fp .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 19px}
+  .fp .n{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--accent);line-height:1}
+  .fp h4{font-size:16px;font-weight:700;margin:8px 0 5px}
+  .fp p{margin:0;font-size:14.3px;color:var(--body)}
+
+  /* ---- two worlds ---- */
+  .worlds{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 6px}
+  .world{border-radius:14px;padding:20px;border:1px solid var(--line)}
+  .world.pres{background:#FBF7F0}
+  .world.proof{background:#F1E7DA}
+  .world h4{font-size:18px;font-weight:800;display:flex;align-items:center;gap:9px}
+  .world .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    background:var(--ink);color:#fff;padding:3px 9px;border-radius:999px}
+  .world.proof .tag{background:var(--accent)}
+  .world ul{margin:11px 0 0;padding-left:18px}
+  .world li{margin:5px 0;font-size:14.3px}
+  .lawbox{background:var(--ink);color:#F4EFE6;border-radius:14px;padding:22px 24px;margin-top:18px}
+  .lawbox .l{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#E0A07F}
+  .lawbox p{margin:7px 0 0;font-size:19px;line-height:1.5}
+  .lawbox p b{color:#fff}
+
+  /* ---- rules table ---- */
+  .rules{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+  .rule{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line)}
+  .rule:first-child{border-top:none}
+  .rule .t,.rule .x{padding:14px 17px}
+  .rule .t{background:#FBF7F0;border-right:1px solid var(--line)}
+  .rule .lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);display:block;margin-bottom:3px}
+  .rule .t b{color:var(--ink);font-size:14.6px}
+  .rule .x b{color:var(--accent-d);font-size:14.6px}
+  .rule .why{display:block;margin-top:5px;font-size:13px;color:var(--muted)}
+
+  /* ---- move library ---- */
+  .move{background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:16px;margin-bottom:16px;display:grid;grid-template-columns:236px 1fr;gap:20px}
+  .move .vid{position:relative}
+  .move video{width:100%;border-radius:11px;background:#000;display:block;aspect-ratio:9/16;object-fit:cover}
+  .move .ts{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);color:#fff;
+    font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;font-variant-numeric:tabular-nums}
+  .move .body h3{font-size:20px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .move .num{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:24px}
+  .badge{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    padding:3px 9px;border-radius:999px;border:1px solid}
+  .badge.pres{color:#6b5b3e;border-color:#d8c7a6;background:#fbf3e3}
+  .badge.proof{color:var(--accent-d);border-color:#e2b89f;background:var(--accent-soft)}
+  .move dl{margin:12px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px}
+  .move dt{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding-top:2px}
+  .move dd{margin:0;font-size:14.4px;color:var(--body)}
+  .swap{margin-top:12px;background:#F1E7DA;border-left:3px solid var(--accent);
+    border-radius:0 10px 10px 0;padding:10px 14px;font-size:13.6px}
+  .swap b{color:var(--accent-d);text-transform:uppercase;font-size:11px;letter-spacing:.08em}
+
+  /* ---- pace stats ---- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:16px}
+  .stat .big{font-size:34px;font-weight:800;color:var(--accent);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat .lab{font-size:12.5px;color:var(--muted);margin-top:6px;font-weight:500}
+  .pacelist{margin:0;padding-left:20px}
+  .pacelist li{margin:7px 0;font-size:15px}
+
+  /* ---- timeline ---- */
+  table.tl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:13.6px}
+  table.tl th{background:#FBF7F0;text-align:left;padding:11px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--line)}
+  table.tl td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.tl tr:last-child td{border-bottom:none}
+  .twrld{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:999px;white-space:nowrap}
+  .twrld.p{background:#fbf3e3;color:#6b5b3e}
+  .twrld.r{background:var(--accent-soft);color:var(--accent-d)}
+  .tt{font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink);white-space:nowrap}
+  table.tl td .sc{color:var(--ink)}
+
+  /* ---- worksheet ---- */
+  .ws-intro{background:#F1E7DA;border:1px solid #E2C9B6;border-radius:14px;padding:18px 20px;margin-bottom:20px}
+  .ws-intro h4{font-size:17px;margin-bottom:6px}
+  .ws-beat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 18px;margin-bottom:11px}
+  .ws-beat .bt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-d)}
+  .ws-beat .vo{font-family:var(--serif);font-style:italic;font-size:18.5px;color:var(--ink);margin:5px 0 9px;line-height:1.35}
+  .ws-beat .mv{font-size:14px;margin:3px 0}
+  .ws-beat .mv b{color:var(--ink)}
+  .noreuse{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--surface);margin-top:6px}
+  .noreuse .h{padding:11px 15px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--line)}
+  .noreuse .h.a{background:#F1E7DA;color:var(--accent-d)}
+  .noreuse .h.b{background:#FBF7F0;color:#6b5b3e}
+  .noreuse .c{padding:10px 15px;border-bottom:1px solid var(--line);font-size:13.7px}
+  .noreuse .c.a{border-right:1px solid var(--line);color:var(--muted);text-decoration:line-through;text-decoration-color:#d8b9a6}
+  .noreuse .c.b{color:var(--ink);font-weight:500}
+  .noreuse > .c:nth-last-child(-n+2){border-bottom:none}
+
+  /* ---- checklist ---- */
+  .check{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 6px}
+  .check label{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer;font-size:15px}
+  .check label:last-child{border-bottom:none}
+  .check input{margin-top:4px;width:17px;height:17px;accent-color:var(--accent);flex:none}
+  .check label span b{color:var(--ink)}
+
+  /* ---- source player ---- */
+  .source{display:grid;grid-template-columns:220px 1fr;gap:22px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .source video{width:100%;border-radius:11px;aspect-ratio:9/16;object-fit:cover;background:#000}
+  .source h4{font-size:19px;margin-bottom:6px}
+  details.tr{margin-top:14px;background:#FBF7F0;border:1px solid var(--line);border-radius:11px;padding:4px 16px}
+  details.tr summary{cursor:pointer;font-weight:700;color:var(--ink);padding:10px 0;font-size:14px}
+  details.tr p{font-size:14px;margin:4px 0 14px;color:var(--body)}
+  details.tr .ln{display:block;margin:3px 0}
+  details.tr .ln b{color:var(--accent-d);font-variant-numeric:tabular-nums;font-weight:700;margin-right:8px}
+
+  footer{padding:40px 0 70px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+  footer b{color:var(--ink)}
+
+  @media(max-width:760px){
+    body{font-size:16px}
+    header.hero h1{font-size:34px}
+    .fp,.worlds,.stats{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .move{grid-template-columns:1fr;gap:14px}
+    .move .vid{max-width:230px}
+    .rule,.noreuse{grid-template-columns:1fr}
+    .rule .t{border-right:none}
+    .noreuse .c.a{border-right:none}
+    .source{grid-template-columns:1fr}
+    .source .vid{max-width:230px}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><symbol id="sun" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5l1.7 6.1 4.5-4.4-2 6 6-2-4.4 4.5 6.1 1.7-6.1 1.8 4.4 4.5-6-2 2 6-4.5-4.4L12 22.5l-1.7-6.1-4.5 4.4 2-6-6 2 4.4-4.5L4.1 12l6.1-1.8-4.4-4.5 6 2-2-6 4.5 4.4z"/></symbol></svg>
+
+<nav><div class="wrap">
+  <b>STYLE SYSTEM</b>
+  <a href="#fingerprint">Fingerprint</a>
+  <a href="#engine">The core move</a>
+  <a href="#rules">Rulebook</a>
+  <a href="#moves">Move library</a>
+  <a href="#pace">Pace</a>
+  <a href="#timeline">Timeline</a>
+  <a href="#apply">Apply it</a>
+  <a href="#check">Self-check</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <span class="kicker"><svg class="sun"><use href="#sun"/></svg> Editor breakdown · repeatable system</span>
+  <h1>How <span class="s">“FABLE 5 Main”</span> is edited — and how to do it again on any topic</h1>
+  <p class="sub">Everything that makes this 47-second short read the way it does, written as rules an editor can apply to a brand-new video — <strong>without reusing a single shot, logo, or graphic from this one.</strong> Read top to bottom once; after that it's a reference you jump around in.</p>
+  <div class="meta">
+    <span class="pill">47s <span>· vertical 9:16</span></span>
+    <span class="pill">11 <span>hard cuts</span></span>
+    <span class="pill">~94 <span>on-screen states</span></span>
+    <span class="pill">~50/50 <span>presenter / proof</span></span>
+    <span class="pill">VO-driven <span>· faceless-style</span></span>
+  </div>
+</div></header>
+
+<div class="wrap">
+
+<section id="source" style="border-top:none">
+  <div class="source">
+    <div class="vid"><video src="working.mp4" controls preload="metadata" playsinline></video></div>
+    <div>
+      <h4>The source — watch it once before you read</h4>
+      <p style="margin:0;font-size:15px">A 47-second launch short for an AI model. The whole video is the spine for everything below: the script is the skeleton, and every visual choice is hung off a specific line. The breakdown is written so you internalise the <em>logic</em>, not memorise these exact graphics.</p>
+      <details class="tr"><summary>Read the script (the spine)</summary>
+        <p>Every rule below is anchored to one of these lines. Notice it's a complete short-form arc: flex hook → what it is → how it works → proof → honest caveat → where it shines → offer + CTA.</p>
+        <div id="script"></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="fingerprint">
+  <div class="sec-h"><span class="sec-no">01</span><h2>The fingerprint</h2></div>
+  <p class="lede">The handful of things that make it read as <em>this</em> style in three seconds. Get these wrong and nothing else matters; get these right and the rest is detail.</p>
+  <div class="fp" id="fp"></div>
+</section>
+
+<section id="engine">
+  <div class="sec-h"><span class="sec-no">02</span><h2>The core move: it flips between two modes</h2></div>
+  <p class="lede">The whole video is built on one decision repeated over and over — <strong>which mode is this line?</strong> Narration and opinion go to the presenter. Anything concrete cuts away to a literal visual. It ping-pongs between the two roughly every 5–10 seconds.</p>
+  <div class="worlds">
+    <div class="world pres">
+      <h4><span class="tag">Mode A</span> Presenter</h4>
+      <p style="margin:9px 0 0;font-size:14.3px">The host on camera, big word-by-word captions, no other graphics. Carries the <em>voice</em> — the hook, the opinion, the "here's the honest truth", the offer.</p>
+      <ul>
+        <li>1–3 words on screen at a time, synced to the voice</li>
+        <li>Bold white sans for normal words; <em>serif italic</em> for the one phrase that matters</li>
+        <li>Used when there's nothing concrete to show — it's the human talking</li>
+      </ul>
+    </div>
+    <div class="world proof">
+      <h4><span class="tag">Mode B</span> Proof</h4>
+      <p style="margin:9px 0 0;font-size:14.3px">Cuts fully away from the host: b-roll, phone mockups, real documents, custom icons, screen-recordings, logos, counting numbers. Carries the <em>claims</em> — it shows the receipt for everything the voice asserts.</p>
+      <ul>
+        <li>Every concrete noun, number, name or claim triggers a cut here</li>
+        <li>Always literal — show the actual thing, not a vibe</li>
+        <li>Snaps back to the presenter the moment the voice goes back to opinion</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lawbox">
+    <span class="l">The one law underneath all of it</span>
+    <p><b>Show every noun.</b> If the voice names a concrete thing — a product, a number, a company, a claim with a source — it appears on screen as a literal visual within about a third of a second. Nothing concrete is ever <em>said</em> without being <em>shown</em>. That single habit is what makes it feel dense and "high-production" rather than a talking head with captions.</p>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="sec-h"><span class="sec-no">03</span><h2>The rulebook</h2></div>
+  <p class="lede">What to put on screen for each <em>kind</em> of line — written with no mention of the topic, so it fires on any script. This is the part you actually memorise: read the line, recognise its type, apply the move.</p>
+  <div class="rules" id="rules"></div>
+</section>
+
+<section id="moves">
+  <div class="sec-h"><span class="sec-no">04</span><h2>The move library</h2></div>
+  <p class="lede">Every reusable visual move in the video, with the clip beside it. For each: <strong>what it is · when to reach for it · how it's built (timing &amp; logic) · why it works</strong> — plus a <em>swap-for</em> note so you build a fresh version instead of copying this one.</p>
+  <div id="moves"></div>
+</section>
+
+<section id="pace">
+  <div class="sec-h"><span class="sec-no">05</span><h2>Pace &amp; timing</h2></div>
+  <p class="lede">The numbers behind the "it never lets you breathe" feeling — and where the one deliberate breather is placed.</p>
+  <div class="stats" id="stats"></div>
+  <ul class="pacelist" id="pace"></ul>
+</section>
+
+<section id="timeline">
+  <div class="sec-h"><span class="sec-no">06</span><h2>The full timeline, beat by beat</h2></div>
+  <p class="lede">The whole video walked end to end: the line, which mode it's in, the move that carries it. This is the "nothing left to figure out" layer — read a row and you know exactly what's on screen and why.</p>
+  <table class="tl"><thead><tr><th>Time</th><th>Mode</th><th>Voice / on-screen</th><th>Move</th></tr></thead><tbody id="tl"></tbody></table>
+</section>
+
+<section id="apply">
+  <div class="sec-h"><span class="sec-no">07</span><h2>Apply it to a new video — without repeating yourself</h2></div>
+  <p class="lede">The point of the whole document. The <strong>grammar stays fixed; the props are disposable.</strong> Here's the same system run on a completely different video — an AI that answers support calls — with brand-new visuals for every move. Nothing from the Fable video is reused.</p>
+  <div class="ws-intro">
+    <h4>Worked example · new script, same grammar</h4>
+    <p style="margin:0;font-size:14.6px">Pretend the next video is: <em>“This AI handled 400 support calls overnight — and the customers couldn't tell.”</em> Same seven beats, same flip between presenter and proof, same "show every noun" law — but every prop is different. Walk it:</p>
+  </div>
+  <div id="ws"></div>
+  <h4 style="font-size:18px;margin:26px 0 10px">The never-reuse rule, made concrete</h4>
+  <p style="font-size:15px;margin:0 0 12px;max-width:760px">For each move, the left column is what <em>this</em> video used — treat it as burned, never use it again. The right column is the kind of fresh prop the same move takes next time. <strong>Same move, new prop, every single video.</strong></p>
+  <div class="noreuse" id="noreuse"></div>
+</section>
+
+<section id="check">
+  <div class="sec-h"><span class="sec-no">08</span><h2>Did you nail the style? — self-check</h2></div>
+  <p class="lede">Run a finished cut against this before you call it done. If every box ticks, it reads as the style — on any topic.</p>
+  <div class="check" id="check"></div>
+</section>
+
+<footer>
+  <p><b>Style System · “FABLE 5 Main”</b> — generated breakdown. Source: <code>FABLE 5 Main.mp4</code> (47s, 2160×3840, 50fps). Working assets in <code>~/Downloads/fable5-style/</code> · clips in <code>clips/</code> · frame grids in <code>grids/</code>. Built from a 2fps frame decode + the transcript as spine.</p>
+  <p style="margin-top:8px">The grammar is the asset. The graphics in this video are spent — the next video gets new ones.</p>
+</footer>
+
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const SCRIPT=[
+ [0.0,"Someone just built a complete Minecraft clone in 20 minutes with Claude Fable 5."],
+ [4.5,"Fable 5 is the public version of Mythos."],
+ [6.9,"The model was kept blocked for 2 months because it could exploit security flaws on its own."],
+ [12.1,"Same brain as Mythos, but the guardrails are so strict it will switch the model on its own,"],
+ [16.8,"even if you're just asking it to review your own code."],
+ [19.3,"Stripe used it to migrate 50 million lines of code in one day,"],
+ [22.5,"and that's why developers on X are losing it."],
+ [25.0,"Here's the honest take."],
+ [26.0,"If you're just writing emails or building landing pages, it will not make a difference —"],
+ [28.8,"it'll just make you burn tokens twice as fast."],
+ [33.4,"But agents, multi-step workflows, long complex reasoning chains —"],
+ [37.1,"that is where Fable pulls ahead of every Claude before it."],
+ [40.1,"It is free for all Pro and Max users till 22nd June,"],
+ [43.8,"and if you wanna build with it, comment Fable and I'll send you a guide."],
+];
+
+const FP=[
+ ["Voice first, captions always","A single voice-over drives everything, and there's almost always text on screen — 1–3 words at a time. You're never just listening; you're always reading something too."],
+ ["Two type voices","Bold white sans for the punch and the connective words; an elegant <em>serif italic</em> for the one phrase per sentence that should feel premium or land hardest. The contrast is the whole typographic identity."],
+ ["Warm cream + terracotta proof world","When it leaves the presenter, the explainer visuals live in a calm cream space with hand-drawn terracotta/orange line-icons and the brand's sunburst mark. Looks editorial, not techy."],
+ ["Literal, receipts-based","Real announcement docs, real tweets, real screen-recordings, real logos. It proves claims with the actual artifact, phrase highlighted — never a generic stock vibe."],
+ ["Hard cuts &amp; spark whooshes only","No slow dissolves anywhere. Cuts are hard, transitions are quick spark/particle whooshes on the beat. The motion is snappy and music-locked."],
+ ["One aesthetic curveball","Right before the payoff it breaks its own look with an unexpected vintage-art collage. A deliberate pattern-interrupt that re-grabs attention at the exact moment it usually drops."],
+];
+
+const RULES=[
+ ["Line names a concrete product / object","Cut to literal b-roll of it and label it in its own brand font","You don't describe a Minecraft clone — you show Minecraft. The brain confirms the claim instantly."],
+ ["Line has a number or stat","Isolate the number, sized huge, alone on screen. If it's a wow-stat, count up to it","A number you can't miss reads as proof. Counting up turns a static figure into a tiny payoff."],
+ ["Line names a company or tool","Drop that company's logo as the visual","A logo is recognised faster than its name is read — instant credibility transfer."],
+ ["Line makes a claim with a source","Show the actual document / post in a phone frame or full-screen, highlight the exact phrase","Receipts. The highlight does the pointing so the viewer reads only the words that matter."],
+ ["Line describes an abstract state (locked, blocked, thinking, switching)","A simple custom line-icon — not footage","You can't film 'kept blocked.' A drawn icon (the model behind bars) makes the abstract literal and stays on-brand."],
+ ["Line names a feature / capability","A zoomed screen-recording of that thing actually happening","Shows it's real and not marketing. Motion of real software reads as 'this works.'"],
+ ["Line is opinion, narration, or 'the honest truth'","Cut to the presenter, captions only, kill every graphic","Stripping the visuals signals sincerity — 'now I'm talking to you, not selling.' The contrast makes it land."],
+ ["The one phrase to remember in a sentence","Set it in serif italic; everything else stays bold sans","One emphasis per line tells the eye where the meaning is. More than one and nothing stands out."],
+ ["Claim about a crowd reacting","A hand holding a phone, scrolling real posts/comments","UGC framing makes social proof feel found, not staged."],
+ ["A 'better than everything' / elevated claim","Break the visual pattern with an unexpected aesthetic (here: vintage art)","Sameness gets tuned out. A jarring-but-tasteful switch forces a fresh look right before the important bit."],
+ ["The call to action","Show the action literally — the comment box, the button — and put any date in serif","Don't say 'comment below', show the comment being typed. The serif date makes the deadline feel special, not nagging."],
+ ["Between beats","Hard cut, or a quick spark/whoosh on the beat — never a dissolve","Speed and rhythm. Slow transitions kill short-form retention; the whoosh keeps energy on the music."],
+];
+
+const MOVES=[
+ ["01","01_hook_kinetic_caption.mp4","0:00","pres","Presenter + word-by-word hook caption",
+   "The host on camera with the opening line built one chunk at a time in big bold white caps, centred.",
+   "The very first 2 seconds, and any pure-narration stretch.",
+   "1–3 words appear in time with the voice; each chunk replaces the last. Type sits center-low, heavy weight, white with a subtle shadow so it reads over any footage.",
+   "Captions force the hook to be read even on mute, and the word-by-word reveal paces the viewer to the voice.",
+   "A different host shot, a different opening line. Never reuse the exact hook framing — re-block the shot."],
+ ["02","02_keyword_broll_sync.mp4","0:01","proof","Keyword b-roll with synced label",
+   "Cut to literal footage of the thing being named, with the keyword styled in that thing's own font.",
+   "The instant the voice says a nameable object ('Minecraft', 'a clone').",
+   "B-roll lands on the word, not after it. The keyword animates in over the footage in the brand's typeface, then cuts before it overstays.",
+   "Hearing + seeing + reading the same noun at once locks it in and proves the claim in one beat.",
+   "New noun → new footage → new brand font. Swap Minecraft for whatever this script literally names."],
+ ["03","03_number_callout.mp4","0:02","proof","Big number callout",
+   "The number alone, oversized, over the b-roll — a quick spark whoosh leads into it.",
+   "Any time a figure is spoken ('20 minutes', '2 months').",
+   "Number scales up fast on the beat, holds under a second, cuts. Often paired with a one-word unit beneath it.",
+   "A giant number is unmissable and reads as the headline of that moment.",
+   "Different figure each video. The move is 'isolate + oversize', not 'the number 20'."],
+ ["04","04_brand_lockup_serif.mp4","0:03","proof","Progressive serif brand lockup",
+   "A premium title-card built up word by word in serif italic, with the sunburst mark, over the hero b-roll.",
+   "Naming the product/brand for the first time — the 'star is born' moment.",
+   "Words arrive in sequence ('20 minutes' → 'with' → '✳ Fable 5') in elegant serif italic, layered over the most cinematic b-roll of the cut.",
+   "Serif + slow build = prestige. It frames the product as the hero, not just another caption.",
+   "Your product, your hero shot. Keep the build + serif logic; change the words and the footage under it."],
+ ["05","05_phone_mockup_highlight.mp4","0:04","proof","Phone mockup with highlight",
+   "The real announcement / doc inside a clean phone frame on a cream background, key phrase marker-highlighted.",
+   "A claim that has a written source you can show.",
+   "Phone floats in on cream (set apart from the b-roll world); camera pushes slightly; the proof phrase gets a highlighter swipe.",
+   "Showing the actual source — phrase highlighted — is far more convincing than asserting it.",
+   "Different doc, different highlighted phrase. The frame + highlight is the move; the screenshot is disposable."],
+ ["06","06_terracotta_icons.mp4","0:08","proof","Custom terracotta line-icons",
+   "Abstract ideas drawn as simple orange line-icons on cream — the model as a sunburst, 'locked' as bars, 'computing' as a retro monitor.",
+   "Lines that describe a state or idea you can't film.",
+   "One clean icon per idea, animated in simply (draw-on / pop), held briefly, with a tiny caption. Consistent stroke + terracotta colour ties them together.",
+   "Turns invisible concepts into on-brand visuals and keeps the proof world feeling designed, not stocky.",
+   "Draw new icons for the new ideas. Same style (line, terracotta, cream); never paste these exact ones."],
+ ["07","07_fullscreen_doc_highlight.mp4","0:11","proof","Full-screen document with highlights",
+   "The source text taken full-frame with multiple phrases highlighted in colour.",
+   "When the credibility of a claim is the point and the doc itself is the star.",
+   "Doc fills the screen, gentle scroll/zoom, two-tone highlights guide the eye to the exact lines.",
+   "Going full-screen says 'read this yourself' — maximum trust, minimum spin.",
+   "New source text. Reuse the highlight-guides-the-eye treatment, not the page."],
+ ["08","08_th_caption_serif.mp4","0:13","pres","Presenter caption with serif emphasis",
+   "Back on the host; connective words in bold sans, the phrase that matters flipped to serif italic.",
+   "Opinion / analysis lines where one phrase carries the weight ('switch the model').",
+   "Captions track the voice; at the key phrase the type changes to serif italic so the eye knows that's the point.",
+   "The type-voice switch does the emphasis work a vocal stress would — silent viewers still feel it.",
+   "Same two-type system, new sentence. Pick the new key phrase to italicise."],
+ ["09","09_screen_recording_proof.mp4","0:16","proof","Screen-recording proof",
+   "A zoomed capture of the actual software / code doing the thing.",
+   "When a capability is named and you can literally record it.",
+   "Tight crop on the relevant part, slight push-in, short — just enough to register 'this is real'.",
+   "Real product motion is the strongest proof there is; it can't be faked-looking.",
+   "Record your own product's screen for the new claim. Never recycle a previous capture."],
+ ["10","10_brandname_countup.mp4","0:19","proof","Logo + counting-number payoff",
+   "A named company's logo, then a number animating up to the punchline stat, with the kicker phrase highlighted.",
+   "A proof stat tied to a recognised name ('Stripe… 50 million lines… in one day').",
+   "Logo establishes who; the figure counts up (45M→49M→50M) to a held final; a short kicker ('in one day') drops in highlighted.",
+   "Name + rising number + kicker is a three-step mini-story that makes one stat feel like an event.",
+   "Different company, different stat, different kicker. Keep the count-up-to-payoff structure."],
+ ["11","11_hand_phone_social.mp4","0:22","proof","Hand-holding-phone social proof",
+   "A real hand holding a phone, scrolling actual posts / tweets about the thing.",
+   "Claims about people reacting ('developers are losing it').",
+   "Handheld phone fills frame, thumb scrolls real posts, quick cuts between a couple of them.",
+   "The found-footage, in-someone's-hand framing makes the buzz feel real and current.",
+   "Pull fresh posts for the new video. The hand-phone framing is the move; the screenshots are throwaway."],
+ ["12","12_honest_take_pivot.mp4","0:24","pres","The honest-take pivot",
+   "A clean cut to the presenter with no graphics at all, marking the turn from hype to truth.",
+   "The moment the video changes gear ('Here's the honest take').",
+   "Hard cut to a composed host shot, captions only, graphics stripped — the visual quiet signals the tonal shift.",
+   "Taking everything away makes the sincerity feel earned and resets attention for the real argument.",
+   "Same 'strip it back' beat, new shot and line. Every video earns trust by going quiet once."],
+ ["13","13_caveat_th_captions.mp4","0:28","pres","Caveat, delivered to camera",
+   "The downside spoken straight to camera, captions only — no visual sugar over a negative.",
+   "The 'this won't help you if…' honesty stretch.",
+   "Stays on the host through the whole caveat; captions keep tracking; no proof cuts because there's nothing to sell here.",
+   "Visual restraint over a negative reads as honest; dressing it up would feel like spin.",
+   "Same restraint, your caveat. The absence of graphics is the move."],
+ ["14","14_labeled_capability_cards.mp4","0:35","proof","Labeled capability cards",
+   "A rapid list: each item is a title label + a proof screen-rec + a small icon on a coloured background.",
+   "Listing several strengths fast ('agents, multi-step workflows, reasoning chains').",
+   "One card per item, each on a soft colour panel, title top, capture beneath, icon accent — cut quickly through them.",
+   "Turns a spoken list into a scannable, designed sequence so none of it feels like filler.",
+   "New list, new labels, new captures, new background colour. Reuse the card layout only."],
+ ["15","15_vintage_collage_interrupt.mp4","0:37","proof","Vintage-art pattern-interrupt",
+   "A sudden switch to eclectic old imagery — antique maps, oil paintings, botanical prints, postage stamps.",
+   "An elevated 'better than all before it' claim, right before the payoff.",
+   "Breaks the established look entirely for a few beats; the unexpected, refined imagery implies timelessness/superiority.",
+   "Pattern-sameness gets ignored; a tasteful jolt re-captures the eye exactly when the big claim lands.",
+   "This is the one to vary most — never do vintage-collage twice. Find a different unexpected aesthetic each video."],
+ ["16","16_offer_serif_date.mp4","0:41","pres","Offer with serif date",
+   "Back on the host for the offer; the deadline date set in serif italic.",
+   "The 'it's free until…' value + urgency beat.",
+   "Presenter delivers the offer, captions track it, and the date alone flips to serif italic to make the deadline feel special.",
+   "Serif on the date makes urgency feel like an invitation, not pressure.",
+   "New offer, new date — same 'date in serif' touch."],
+ ["17","17_cta_comment_box.mp4","0:44","pres","Literal CTA overlay",
+   "A fake platform comment-box animates in showing the exact word to type, over the presenter.",
+   "The final ask ('comment Fable').",
+   "A native-looking comment field slides up at the bottom, the trigger word types itself in, host stays in frame behind it.",
+   "Showing the action removes the friction of figuring out what to do — the viewer just copies what they see.",
+   "New trigger word, same show-the-action overlay. Match whatever platform it's posted to."],
+];
+
+const STATS=[
+ ["46.9s","total runtime"],
+ ["~3.4s","avg per mode-block"],
+ ["~0.5–1.5s","new text on screen"],
+ ["0","slow dissolves"],
+];
+const PACE=[
+ "<b>11 hard cuts, but ~94 distinct on-screen states.</b> The cuts are few; the <em>reading</em> changes constantly. That gap is the trick — continuous b-roll/host underneath, restless text and graphics on top.",
+ "<b>Near 50/50 presenter vs proof</b>, alternating in blocks of roughly 5–10 seconds. It never sits in one mode long enough to get boring.",
+ "<b>The one breather is engineered.</b> The vintage-collage interrupt lands at ~37.5s — right before the offer, the classic drop-off point — to yank attention back for the CTA.",
+ "<b>Everything is on the beat.</b> Number pops, spark whooshes and cuts hit with the music; there's no transition that isn't snappy.",
+ "<b>One emphasis per sentence.</b> Exactly one serif-italic phrase per spoken line — the pacing of <em>meaning</em>, not just of cuts.",
+];
+
+const TL=[
+ ["0:00","p","“Someone just built a complete Minecraft clone in 20 min…”","Hook caption → keyword b-roll → big number → serif lockup"],
+ ["0:04","r","“Fable 5 is the public version of Mythos.”","Phone mockup of the announcement doc, key phrase highlighted"],
+ ["0:07","r","“…kept blocked for 2 months… exploit security flaws.”","Custom terracotta icons: model = sunburst, locked = bars"],
+ ["0:12","r","“Same brain… guardrails so strict it'll switch the model.”","Full-screen doc highlight → back to presenter w/ serif emphasis"],
+ ["0:17","p","“…even if you're just asking it to review your code.”","Presenter, captions; ‘switch the model’ in serif italic"],
+ ["0:19","r","“Stripe used it to migrate 50 million lines in one day.”","Stripe logo → 45M→50M count-up → ‘in one day’ highlighted"],
+ ["0:22","r","“…and that's why developers on X are losing it.”","Hand holding phone, scrolling real tweets"],
+ ["0:25","p","“Here's the honest take.”","Clean cut to presenter — all graphics stripped (the pivot)"],
+ ["0:26","p","“If you're just writing emails or landing pages…”","Presenter, captions only — no proof cuts over the caveat"],
+ ["0:29","p","“…it'll just make you burn tokens twice as fast.”","Presenter; ‘twice as fast’ in serif italic"],
+ ["0:33","r","“But agents, multi-step workflows, reasoning chains —”","Labeled capability cards on colour panels, rapid list"],
+ ["0:37","r","“…where Fable pulls ahead of every Claude before it.”","Vintage-art collage pattern-interrupt"],
+ ["0:40","p","“Free for all Pro and Max users till 22nd June,”","Presenter; ‘22nd June’ in serif italic"],
+ ["0:44","p","“…comment Fable and I'll send you a guide.”","Fake comment-box overlay types ‘Fable’ in"],
+];
+
+const WS=[
+ ["Hook · flex","“This AI handled 400 support calls overnight — and the customers couldn't tell.”",
+   ["<b>Presenter</b> opens the line word-by-word.","Cut to <b>proof</b>: b-roll of a phone ringing / a call-center, ‘400’ as a big number callout, then a serif lockup of the product name over a clean hero shot."]],
+ ["What it is","“It's a voice agent built on [model], trained on a million real call transcripts.”",
+   ["<b>Proof</b>: phone-frame mockup of the product page, the ‘million transcripts’ line highlighted.","Terracotta icons for the abstract bits: a headset, a sound-waveform, a brain."]],
+ ["How it works","“It listens, looks up your account, and talks back in real time.”",
+   ["<b>Proof</b>: a screen-recording of the live call dashboard doing it — captions name each step."]],
+ ["Proof","“[Company] swapped 30 agents for it and cut wait times by 90%.”",
+   ["<b>Proof</b>: the company's logo, then a number counting <em>down</em> 8min→45sec, kicker ‘overnight’ highlighted.","Hand-phone social proof: real posts from support leads reacting."]],
+ ["Honest take","“If you get ten calls a week, this is overkill — you'll pay for capacity you don't use.”",
+   ["<b>Presenter</b>, graphics stripped — the honest-take pivot, then the caveat straight to camera."]],
+ ["Where it shines","“But high-volume, repetitive, after-hours queues — that's where it pays for itself.”",
+   ["<b>Proof</b>: labeled capability cards (‘After-hours’, ‘Overflow’, ‘Tier-1 triage’).","The pattern-interrupt — but <em>not</em> vintage art this time: e.g. a bold retro-switchboard / blueprint motif. Different curveball, same job."]],
+ ["Offer + CTA","“Free pilot for teams over 50 seats till [date] — comment CALLS for the setup doc.”",
+   ["<b>Presenter</b>; the date in serif italic; fake comment-box types ‘CALLS’ in."]],
+];
+
+const NOREUSE=[
+ ["Minecraft gameplay b-roll","Footage of whatever the new script literally names"],
+ ["The number ‘20 minutes’","The new script's own figure, oversized"],
+ ["Stripe logo + 50M count-up","A different company + a different stat (can count down too)"],
+ ["The announcement-doc screenshot","The new product's own page / doc, freshly highlighted"],
+ ["These exact terracotta icons","New icons for the new ideas — same line + colour style"],
+ ["Vintage-art collage","A different unexpected aesthetic, never collage twice"],
+ ["‘comment Fable’ box","The new trigger word in a platform-matched box"],
+];
+
+const CHECK=[
+ "Does the opening land a concrete, specific flex in the first ~2 seconds?",
+ "Is every concrete noun, number, name and sourced claim <b>shown</b> within ~0.3s of being said?",
+ "Is there something new to read on screen at least every ~1.5 seconds?",
+ "Does it flip between presenter and proof at least every ~8–10 seconds?",
+ "Is there exactly <b>one</b> serif-italic emphasis per spoken sentence?",
+ "Are the two type-voices consistent (bold sans for normal, serif italic for the key phrase)?",
+ "Is there one clean ‘strip it back to the host’ pivot for the honest beat?",
+ "Is the big stat <b>counted up/down</b> to, not shown static?",
+ "Is there exactly one aesthetic pattern-interrupt, placed right before the CTA?",
+ "Are all transitions hard cuts or quick whooshes — zero slow dissolves?",
+ "Does the CTA <b>show the action</b> (comment box / button), with any date in serif?",
+ "Are <b>all</b> props brand-new — no b-roll, logo, icon or motif reused from a past video?",
+];
+
+/* ---------------- RENDER ---------------- */
+const $=(s)=>document.querySelector(s);
+$("#script").innerHTML=SCRIPT.map(([t,l])=>`<span class="ln"><b>${fmt(t)}</b>${l}</span>`).join("");
+function fmt(t){const m=Math.floor(t/60),s=Math.floor(t%60);return m+":"+String(s).padStart(2,"0");}
+
+$("#fp").innerHTML=FP.map((c,i)=>`<div class="card"><div class="n">${String(i+1).padStart(2,"0")}</div><h4>${c[0]}</h4><p>${c[1]}</p></div>`).join("");
+
+$("#rules").innerHTML=RULES.map(r=>`<div class="rule"><div class="t"><span class="lab">When the line…</span><b>${r[0]}</b></div><div class="x"><span class="lab">Put on screen</span><b>${r[1]}</b><span class="why">${r[2]}</span></div></div>`).join("");
+
+$("#moves").innerHTML=MOVES.map(m=>`
+ <div class="move">
+   <div class="vid"><span class="ts">${m[2]}</span>
+     <video src="clips/${m[1]}" controls loop muted playsinline preload="metadata"></video></div>
+   <div class="body">
+     <h3><span class="num">${m[0]}</span> ${m[4]} <span class="badge ${m[3]}">${m[3]==='pres'?'Presenter':'Proof'}</span></h3>
+     <dl>
+       <dt>What</dt><dd>${m[5]}</dd>
+       <dt>When</dt><dd>${m[6]}</dd>
+       <dt>How</dt><dd>${m[7]}</dd>
+       <dt>Why</dt><dd>${m[8]}</dd>
+     </dl>
+     <div class="swap"><b>Swap for &middot; don't reuse</b><br>${m[9]}</div>
+   </div>
+ </div>`).join("");
+
+$("#stats").innerHTML=STATS.map(s=>`<div class="stat"><div class="big">${s[0]}</div><div class="lab">${s[1]}</div></div>`).join("");
+$("#pace").innerHTML=PACE.map(p=>`<li>${p}</li>`).join("");
+
+$("#tl").innerHTML=TL.map(r=>`<tr><td class="tt">${r[0]}</td><td><span class="twrld ${r[1]}">${r[1]==='p'?'Presenter':'Proof'}</span></td><td class="sc">${r[2]}</td><td>${r[3]}</td></tr>`).join("");
+
+$("#ws").innerHTML=WS.map(b=>`<div class="ws-beat"><div class="bt">${b[0]}</div><div class="vo">${b[1]}</div>${b[2].map(x=>`<div class="mv">→ ${x}</div>`).join("")}</div>`).join("");
+
+$("#noreuse").innerHTML=`<div class="h a">This video used (burned)</div><div class="h b">Next video uses (fresh)</div>`+
+  NOREUSE.map(n=>`<div class="c a">${n[0]}</div><div class="c b">${n[1]}</div>`).join("");
+
+$("#check").innerHTML=CHECK.map(c=>`<label><input type="checkbox"><span>${c}</span></label>`).join("");
+</script>
+</body>
+</html>
